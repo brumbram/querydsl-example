@@ -5,7 +5,7 @@
 A Spring boot application providing an REST API to generate Reservation report.  
   The reservation report captures the reservations done for a restaurant booking.  
   A reservation provides the information about the reservor and number of people they have booked for.  
-  The application currently has endpoints for generating a visit summary
+  The application currently has endpoints for generating a visit summary  
   A sample reservation input looks like this
 ```json
 {
