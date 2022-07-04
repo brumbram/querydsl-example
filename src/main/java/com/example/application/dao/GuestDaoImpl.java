@@ -2,7 +2,7 @@ package com.example.application.dao;
 
 import com.example.application.model.entity.Guest;
 import com.example.application.exception.DataPersistException;
-import com.opentable.sampleapplication.model.entity.QGuest;
+import com.example.application.model.entity.QGuest;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

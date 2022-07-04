@@ -3,6 +3,23 @@
  v 1.0
 -   
 A Spring boot application providing an REST API to generate Reservation report.  
+  The reservation report captures the reservations done for a restaurant booking.  
+  A reservation provides the information about the reservor and number of people they have booked for.  
+  The application currently has endpoints for generating a visit summary
+  A sample reservation input looks like this
+```json
+{
+    "reservation_id": "5fb66b846d7e1ba76c29a329",
+    "party_size": 6,
+    "scheduled_date": "2020-11-26",
+    "total_spend": 97.84,
+    "guest": {
+      "id": "1004",
+      "name": "Felix Fish"
+    }
+  }
+```
+
 Following are few strategies used in the application. 
 - In-memory H2 database for local development. This application is currently developed for local development only.
 - Querydsl API for data persistence and querying. I've chosen this library to provide type safety and to provision for build queries with dynamic order by expressions.
@@ -15,8 +32,9 @@ Following are few strategies used in the application.
 
 ### Software required
 
-- JDK version 17
+- JDK version 11
 - Maven 3.8.4
+- Spring 2.7
 
 
 ### Steps before we can run the application
@@ -55,8 +73,9 @@ You could use curl or Postman to test the application
 
 http://localhost:8080/reports/visits
 
-Sample input body for the request
+Sample input  
 
+Request
 ```json
 {
   "dateRange": {
@@ -69,5 +88,87 @@ Sample input body for the request
       "sortOrder": "desc"
     }
   ]
+}
+```
+Response
+```aidl
+{
+    "reservationSummaries": [
+        {
+            "guestName": "Rock Lobster",
+            "totalVisits": 1,
+            "totalSpend": 64.55
+        },
+        {
+            "guestName": "Jack Rabbit",
+            "totalVisits": 1,
+            "totalSpend": 55.10
+        },
+        {
+            "guestName": "Harry Houdini",
+            "totalVisits": 3,
+            "totalSpend": 211.18
+        },
+        {
+            "guestName": "Felix Fish",
+            "totalVisits": 3,
+            "totalSpend": 251.12
+        }
+    ]
+}
+```
+Invalid Input
+Request
+```json
+{
+    "dateRange": {
+        "start": "2023-11-20",
+        "end": "2022-11-20"
+    },
+    "sortExpressions": [
+        {
+            "fieldName": "guestName",
+            "sortOrder": "desc"
+        }
+    ]
+}
+```
+
+Response
+```json
+{
+    "status": 400,
+    "message": "Input Validation error.",
+    "errors": [
+        {
+            "field": "dateRange",
+            "message": "Date is out of bound. Please provide a valid date range where start is not greater than end"
+        }
+    ]
+}
+```
+
+Invalid input
+Request
+```json
+{
+    "dateRange": {
+        "start": "2020-11-20",
+        "end": "2022-11-20"
+    },
+    "sortExpressions": [
+        {
+            "fieldName": "guestNme",
+            "sortOrder": "desc"
+        }
+    ]
+}
+```
+
+Response
+```json
+{
+    "status": 400,
+    "message": "Unsupported sort field name -> guestNme"
 }
 ```
